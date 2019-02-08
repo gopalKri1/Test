@@ -1,0 +1,468 @@
+namespace app.plan.trialbalance.components {
+    import stores = datastore.stores;
+
+    export interface ITbTableProps {
+        isCollapsed?: boolean;
+        accounts: datastore.models.IAccount[];
+        businessUnitFSLI: datastore.models.IBusinessUnitFinancialStatementLevel;
+        businessUnit: datastore.models.IBusinessUnit;
+        tickMarkSelectedChanged(t: ITickMarkUpdatedData): void;
+        angularInjector: ng.auto.IInjectorService;
+        supplementalsService: app.supplementals.supplementals.ISupplementalsService;
+        scope: app.IScope;
+        TickmarkStore: app.datastore.stores.ITickmarkStore;
+        tickmarkData: datastore.models.ITickmark[];
+    }
+
+    interface ITbTableStateState {
+        isCollapsed: boolean;
+        tickmark: datastore.models.ITickmark[];
+    }
+
+    interface ITBRowData {
+        rowID?: number;
+        acctNum: string;
+        accDesc: string;
+        priorPerAmount: number;
+        currentPerAmount: number;
+        adjustments?: number;
+        adjCurrentPer?: number;
+    }
+
+    interface ITBCompareRowData {
+        comparative?: number;
+        variance?: number;
+        varPct?: number;
+        isAboveHalfVariance: boolean;
+    }
+
+    interface ITBTickmarkRowData {
+        tickMark: string;
+        tickMarkDescription: string;
+    }
+
+    interface ITBRowAmount {
+        key: number;
+        amountValue: number;
+    }
+
+    interface ITBViewRowData {
+        key: number;
+        tbData: ITBRowData;
+        tbCompareData: ITBCompareRowData;
+        tbTickMarkData: ITBTickmarkRowData;
+        tbAddlPeriodRowData: ITBRowAmount[];
+        accountId: string;
+    }
+
+    const TB_TOOLTIP: string = "Traced and agreed to the current period Trial Balance without exception.";
+    const RC_TOOLTIP: string = "RC means recalculated without exception. RC for the adjusted current column means this amount has been recalculated based on adding current period and the adjusted amounts together.";
+
+    export class TbTable extends React.Component<ITbTableProps, ITbTableStateState> {
+        constructor(props: ITbTableProps) {
+            super(props);
+            let tempProps = props;
+            this.state = {
+                isCollapsed: props.isCollapsed || false,
+                tickmark: this.props.tickmarkData
+            }
+
+          //this is the update handler (read from datastore and update/rerender the component)
+            this.props.scope.$subscribeTo([this.props.TickmarkStore],
+                () => {
+                    if (this.props.TickmarkStore._hasChanged()) {
+                        if (!this.state.tickmark) return;
+                        var updatedTickmark = this.props.TickmarkStore.tickmarks()
+                            .filter(t => t.businessUnitFSLevelId === this.props.businessUnitFSLI.businessUnitFSLevelId)
+                            .valueSeq().toArray();
+                        if (updatedTickmark !== this.state.tickmark) {
+                            this.setState({
+                                tickmark: updatedTickmark
+                            });
+                        }
+                    }                
+                });
+        }
+
+        //TODO
+        //Pass in onchange handler via props to handle the tickmark changes.
+        //Build an array of data to start with defining the rendering of the control.
+        //Build an interace to house column props sifnificant to the display of the table
+        //interface for tbtable cells bold, highlight
+
+
+        //return the display for a null value
+        returnNullDisplayObj = (obj, displayPercent = false) => {
+            if (isNaN(obj) || obj === null)
+                return "--";
+            if (displayPercent)
+                obj = obj * 100;
+
+            return obj != 0 ? (displayPercent ? this.DisplayFormattedNumber(obj) + "%" : this.DisplayFormattedNumber(obj)) : "--";
+        };
+
+        //TODO use what utility already being used to get the locale
+        DisplayFormattedNumber = (number) => {
+            var returnNumber;
+            if (number < 0)
+                returnNumber = number * -1;
+            else
+                returnNumber = number;
+            var formattedNum = returnNumber.toLocaleString('US-EN');
+            return number < 0 ? `(${formattedNum})` : formattedNum;
+        }
+
+
+        toggleDisplay = () => {
+            this.setState({ isCollapsed: !this.state.isCollapsed });
+        };
+
+        returnZero(obj) {
+            if (obj !== null)
+                return obj;
+            return 0;
+        }
+
+        openTickmark = (accountId, businessUnitId, businessUnitFSLevelId) => {
+            this.props.supplementalsService.openTickMark(accountId, businessUnitId, businessUnitFSLevelId);
+        }
+
+
+        render(): JSX.Element {
+
+            // If collapsed - render nothing
+            const isColl = this.props.isCollapsed;
+            if (isColl) {
+                return null;
+            };
+
+            // check if we have only one account - if we dont have exactly one - render nothing
+            let breadcrumbStore = this.props.angularInjector.get<stores.IBreadcrumbStore>("BreadcrumbStore");
+            const auditUnits = breadcrumbStore.getSelectedAus().map(x => x.businessUnitId);
+            if (auditUnits.length !== 1) {
+                return null;
+            };
+
+            // get data stores
+            let businessUnitStore = this.props.angularInjector.get<stores.IBusinessUnitStore>("BusinessUnitStore");
+            let businessUnitFinancialStatementLevelStore = this.props.angularInjector.get<stores.IBusinessUnitFinancialStatementLevelStore>("BusinessUnitFinancialStatementLevelStore");
+            let materialityAssessmentStore = this.props.angularInjector.get<stores.IMaterialityAssessmentStore>("MaterialityAssessmentStore");
+            let trialBalanceStore = this.props.angularInjector.get<stores.ITrialBalanceStore>("TrialBalanceStore");
+
+
+            // init vars
+            const guidEmpty = "00000000-0000-0000-0000-000000000000";
+            const businessUnit = this.props.businessUnit;
+            const businessUnitId = businessUnit.businessUnitId;
+            const activeTbPeriodId = businessUnit.activeTrialBalancePeriodId;
+            const comparePeriodId = businessUnit.comparativeTrialBalancePeriodId;
+            const priorPeriodId = businessUnit.priorActiveTrialBalancePeriodId;
+            const businessUnitFSLevelId = this.props.businessUnitFSLI.businessUnitFSLevelId;
+            let fsliName = this.props.businessUnitFSLI.fsli.name;
+            const showPriorPeriod = (priorPeriodId !== null);   // flag to represent if we should render the prior period data
+
+
+            // init totals vars
+            let priorPerAmountTotal = 0;
+            let currentPerAmountTotal = 0;
+            let currentPerAdjTotal = 0;
+            let adjCurrentPerTotal = 0;
+            let comparativePeriodTotal = 0;
+            let varianceAmountTotal = 0;
+            let variancePercentTotal = 0;
+
+
+            // get all the trial balance periods
+            let trialBalancePeriods = trialBalanceStore.trialBalances().valueSeq().filter(x => auditUnits.indexOf(x.businessUnitId) >= 0).toArray();
+
+            // remove the current period and compare periods from the list
+            let dynamicTrialBalancePeriods = trialBalancePeriods.filter(x => x.trialBalancePeriodId !== activeTbPeriodId && x.trialBalancePeriodId !== comparePeriodId && x.trialBalancePeriodId !== priorPeriodId && x.trialBalancePeriodId !== guidEmpty);
+
+            // build dynamic footer totals
+            let i = 0;
+            let dynamicFooterTotals = dynamicTrialBalancePeriods.map(p => {
+
+                i++;
+                return { key: i, amountValue: 0 };
+            });
+
+
+            // todo: need to finish - this needs to get the matching materiality assessment and get its performanceMateriality value
+            // Get the performance materiality for the current business unit's materiality assessment
+            let performanceMateriality = 1;
+            //let matches = materialityAssessmentStore.materialityAssessments().valueSeq().toArray();
+            //if (matches !== null && matches !== undefined) {
+            //    if (matches.length > 0) {
+            //        let performanceMateriality  = matches[0].performanceMateriality;
+            //    }
+            //}
+
+
+            // map real data to objects used for rendering
+            let rows = [];
+            if (this.props.accounts.length <= 0) {
+                rows = [];
+            } else {
+                rows = [];
+                let rowI = -1;
+                this.props.accounts.forEach(eachAccount => {
+
+                    // init vars
+                    rowI++;
+
+                    // Get PriorPeriod Amount
+                    let priorPeriod = 0;
+                    if (showPriorPeriod) {
+                        priorPeriod = eachAccount.priorPeriod(businessUnitId, businessUnitFSLevelId);
+                    }
+
+                    // Get CurrentPeriod Amount
+                    let currentPeriod = eachAccount.currentPeriod(businessUnitId, businessUnitFSLevelId);
+
+                    // Get CurrentPeriod Adjustments
+                    let adjustments = eachAccount.currentPeriodAdjustments(businessUnitId, businessUnitFSLevelId);
+
+                    // Get Adjusted Current Period
+                    let currentPerAdjustments = eachAccount.adjustedCurrentPeriod(businessUnitId, businessUnitFSLevelId);
+
+                    // Get Comparative Period
+                    let comparativePeriod = eachAccount.comparativePeriod(businessUnitId, businessUnitFSLevelId);
+
+                    // Get Variance Amount
+                    let varianceAmount = eachAccount.varianceAmount(businessUnitId, businessUnitFSLevelId);
+
+                    // Get Variance Percent
+                    let variancePercent = eachAccount.variancePercent(businessUnitId, businessUnitFSLevelId);
+
+                    let eachIsAboveHalfVariance = Math.abs(varianceAmount) > (.5 * performanceMateriality);
+
+                    // Get TickMark
+                    let tickMark = eachAccount.tickMark(businessUnitId, businessUnitFSLevelId);
+
+                    // Get TickMark Description
+                    let tickMarkDescription = eachAccount.tickMarkDescription(businessUnitId, businessUnitFSLevelId);
+
+                    //stripping out the Html 
+                    var tempDiv = document.createElement("div");
+                    tempDiv.innerHTML = tickMarkDescription;
+                    let tickMarkDescText = tempDiv.textContent || tempDiv.innerText || "";
+
+                    //Set additional properties to assist in highlighting                    
+                    let isBalanceChanged: boolean = false, isMovedAccount: boolean = false, isNewAccount: boolean = false;
+                    if (priorPeriod != null && currentPeriod != null)
+                        isBalanceChanged = priorPeriod !== currentPeriod;
+                    else {
+                        if (priorPeriod != null && currentPeriod == null)
+                            isMovedAccount = true;
+                        else {
+                            if (priorPeriod == null && currentPeriod != null)
+                                isNewAccount = true;
+                        }
+                    }
+
+                    // dynamic row data for eachAccountId
+                    // render row data
+                    let eachDynamicRowAmounts = [];
+                    let i = -1;
+                    dynamicTrialBalancePeriods.forEach(x => {
+                        i++;
+                        let eachAmount = eachAccount.amountForPeriod(businessUnitId, businessUnitFSLevelId, x.trialBalancePeriodId);
+                        eachDynamicRowAmounts.push({ key: i, amountValue: eachAmount });
+                    });
+
+                    eachDynamicRowAmounts.forEach(x => {
+                        let eachKey = x.key;
+                        let eachFooterObject = dynamicFooterTotals[eachKey];
+
+                        if (eachFooterObject !== undefined && eachFooterObject !== null)
+                            eachFooterObject.amountValue = eachFooterObject.amountValue + x.amountValue;
+                    });
+
+
+                    // Calculate Totals
+                    priorPerAmountTotal = priorPerAmountTotal + priorPeriod;
+                    currentPerAmountTotal = currentPerAmountTotal + currentPeriod;
+                    currentPerAdjTotal = currentPerAdjTotal + adjustments;
+                    adjCurrentPerTotal = adjCurrentPerTotal + currentPerAdjustments;
+                    comparativePeriodTotal = comparativePeriodTotal + comparativePeriod;
+                    varianceAmountTotal = varianceAmountTotal + varianceAmount;
+                    variancePercentTotal = 0;
+                    if (comparativePeriodTotal > 0 && varianceAmountTotal > 0) {
+                        variancePercentTotal = varianceAmountTotal / comparativePeriodTotal;
+                    };
+
+                    // Set the numeric values into rendering objects
+                    let eachITBViewRowData = {
+                        key: eachAccount.accountId,
+                        tbData: { acctNum: eachAccount.accountNumber, accDesc: eachAccount.description, priorPerAmount: priorPeriod, currentPerAmount: currentPeriod, adjustments: adjustments, adjCurrentPer: currentPerAdjustments },
+                        tbCompareData: { comparative: comparativePeriod, variance: varianceAmount, varPct: variancePercent, isAboveHalfVariance: eachIsAboveHalfVariance },
+                        tbTickMarkData: { tickMark: tickMark, tickMarkDescription: tickMarkDescription, tickMarkDescriptionText: tickMarkDescText },
+                        tbAddlPeriodRowData: eachDynamicRowAmounts,
+                        tbProperties: { isBalanceChanged: isBalanceChanged, isMovedAccount: isMovedAccount, isNewAccount: isNewAccount }
+                    };
+                    rows.push(eachITBViewRowData);
+                });
+            };
+
+
+            // todo: priorPerAmount needs to be rendered conditionally also display -- when amount is 0?
+            let tickMarkOptions = [];
+            rows.forEach((r) => { tickMarkOptions.push(r.tbTickMarkData.tickMark); });
+            let list = rows.length > 0
+                ?
+                rows.map(p => {
+                    let rowAccountClassName: string = (p.tbProperties.isBalanceChanged === true ? " balanceChanged"
+                        : p.tbProperties.isMovedAccount === true ? " movedAccount"
+                            : p.tbProperties.isNewAccount === true ? " newAccount"
+                                : "");
+
+                    let dynamicRows = p.tbAddlPeriodRowData.map(p => {
+                        return (
+                            <td className="tbRowData" key={p.key} > {this.returnNullDisplayObj(p.amountValue)}  </td>
+                        );
+                    });
+
+                    let bufsli = this.props.businessUnitFSLI;
+                    //let options = ['(None)', 'imm', 'Add Custom'];
+                    let options = ['(None)', 'imm','Add Custom'];
+                   rows.forEach((r) => { options.push(r.tbTickMarkData.tickMark); }); 
+
+                    //DropDown Component for TickMarkCell
+                    ///TODO Styling and description rendering
+                    var tickmarkDropDownCell =
+                        <TickmarkDropdownCell tickMarkSelectedChanged={this.props.tickMarkSelectedChanged} accounts={this.props.accounts}
+                            businessUnitFSLI={bufsli} businessUnit={businessUnit} businessUnitFSLevelId={this.props.businessUnitFSLI.businessUnitFSLevelId}
+                            angularInjector={this.props.angularInjector} row={p} tickmarkData={this.props.tickmarkData} OptionValues={options} supplementalsService={this.props.supplementalsService}
+                         />;
+
+                    return (
+                        <tr key={p.key} draggable={true}>
+                            <td key="AccountNumber" className={`tbRowData${rowAccountClassName !== '' ? rowAccountClassName + rowAccountClassName + "Indicator" : ''}`} style={{ textAlign: "left" }}> {p.tbData.acctNum}</td>
+                            <td key="AccountDesc" className={`tbRowData${rowAccountClassName}`} style={{ textAlign: "left" }}> {p.tbData.accDesc}</td>
+                            <td key="PriorCurrent" className={`tbRowData${rowAccountClassName}`}> {this.returnNullDisplayObj(p.tbData.priorPerAmount)}</td>
+                            <td key="Current" className={`tbRowData${rowAccountClassName}`}> {this.returnNullDisplayObj(p.tbData.currentPerAmount)}</td>
+                            <td key="Adj" className="tbRowData"> {this.returnNullDisplayObj(p.tbData.adjustments)}</td>
+                            <td key="AdjCurrent" className="tbRowData"> {this.returnNullDisplayObj(p.tbData.adjCurrentPer)}</td>
+                            <td key="Comparative" className="tbRowData"> {this.returnNullDisplayObj(p.tbCompareData.comparative)}</td>
+                            <td key="Variance" className="tbRowData" style={{ minWidth: "70px", width: "inherit" }}>
+                                {p.tbCompareData.isAboveHalfVariance ? (
+                                    <i className="fa fa-exclamation-triangle yellow" style={{ margin: "5px" }} />
+                                ) : null}
+                                {this.returnNullDisplayObj(p.tbCompareData.variance)}
+                            </td>
+                            <td key="VariancePct" className="tbRowData"> {this.returnNullDisplayObj(p.tbCompareData.varPct)} %</td>
+                            <td key="Tickmark" className="tbRowData" style={{ float: "left", padding: "0 10px" }}>
+                                {tickmarkDropDownCell}
+                            </td>
+                            <td key="TickmarkDesc" className="tbRowData" onClick={() => this.openTickmark(p.key, businessUnitId, businessUnitFSLevelId)} title={p.tbTickMarkData.tickMarkDescriptionText}>
+                                <div style={{ textAlign: "left", padding: "5px 15px", textOverflow: "ellipsis", overflow: "hidden", width: "inherit", maxHeight: "20px" }}>
+                                    {p.tbTickMarkData.tickMarkDescriptionText}
+                                </div>
+                            </td>
+                            {dynamicRows}
+                        </tr >
+                    );
+                })
+                :
+                <tr key='noAccountData' draggable={false}>
+                    <td colSpan={100} style={{ color: "red", paddingLeft: "15px" }}>
+                        <div style={{ textAlign: "left" }}>No G/L Accounts to display.</div>
+                    </td>
+                </tr>
+                ;
+
+            // Collect mark-up for dynamic column headers, rows and footers
+            let dynamicColumns = dynamicTrialBalancePeriods.map(p => {
+                var periodDisplayTitle = "";
+                if (p.title.length < 24) {
+                    periodDisplayTitle = p.title
+                } else {
+                    periodDisplayTitle = p.title.substring(0, 22) + "...";
+                }
+                return (
+                    <th style={{ textAlign: "center", overflow: "inherit" }} key={p.trialBalancePeriodId} title={`${trialBalanceUtils.formatDate(p.periodStart)} - ${trialBalanceUtils.formatDate(p.periodEnd)}`}>
+                        <div>
+                            {periodDisplayTitle}
+                        </div>
+                    </th>
+                );
+            });
+
+            let dynamicFooters = dynamicFooterTotals.map(p => {
+                return (
+                    <td key={p.key}><div> {this.returnNullDisplayObj(p.amountValue)}  </div></td>
+                );
+            });
+
+            // actual render
+            return (
+                <div>
+                    <div className="flex-container" style={{ width: "100%", display: "flex", flexDirection: "column" }} >
+                        <table className="TBTable">
+                            <thead>
+                                <tr>
+                                    <th style={{ paddingRight: "0px" }}><div style={{ textAlign: "left", paddingLeft: "15px" }}>Account #</div></th>
+                                    <th style={{ paddingLeft: "0px" }}><div style={{ textAlign: "left", paddingLeft: "15px" }}>Account Description</div></th>
+                                    <th style={{ paddingRight: "0px" }}><div>Prior Current</div></th>
+                                    <th style={{ paddingLeft: "0px" }}>
+                                        <div>
+                                            <div style={{ textAlign: "center", overflow: "inherit", paddingBottom: "5px" }} className="tb-tooltip annoteText">
+                                                TB <span className="tb-tooltiptext">{TB_TOOLTIP}</span>
+                                            </div>
+                                            <div>Current Period</div>
+                                        </div>
+                                    </th>
+                                    <th style={{ paddingRight: "0px" }}><div>Adjustments</div></th>
+                                    <th style={{ paddingLeft: "0px" }}>
+                                        <div>
+                                            <div style={{ textAlign: "center", overflow: "inherit", paddingBottom: "5px" }} className="tb-tooltip annoteText">
+                                                RC <span className="tb-tooltiptext">{RC_TOOLTIP}</span>
+                                            </div>
+                                            <div>Adj. Current Period</div>
+                                        </div>
+                                    </th>
+                                    <th><div>Comparative</div></th>
+                                    <th style={{ paddingRight: "0px" }}>
+                                        <div>
+                                            <div style={{ textAlign: "center", overflow: "inherit", paddingBottom: "5px" }} className="tb-tooltip annoteText">
+                                                RC  <span className="tb-tooltiptext">{RC_TOOLTIP}</span>
+                                            </div>
+                                            <div>Variance</div>
+                                        </div>
+                                    </th>
+                                    <th style={{ paddingLeft: "0px" }}>
+                                        <div>
+                                            <div style={{ textAlign: "center", overflow: "inherit", paddingBottom: "5px" }} className="tb-tooltip annoteText">
+                                                RC <span className="tb-tooltiptext">{RC_TOOLTIP}</span>
+                                            </div>
+                                            <div>Variance %</div>
+                                        </div>
+                                    </th>
+                                    <th style={{ textAlign: "center", width: "100px", paddingRight: "0px" }}><div>Tickmarks</div></th>
+                                    <th style={{ width: "250px", paddingLeft: "0px" }}><div style={{ textAlign: "left", paddingLeft: "15px" }}>Description</div></th>
+                                    {dynamicColumns}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {list}
+                                <tr className="footerTotal">
+                                    <td style={{ paddingLeft: "0px" }} colSpan={2}><div style={{ textAlign: "left", paddingLeft: "15px" }}>Total - {fsliName}</div></td>
+                                    <td style={{ paddingRight: "0px" }} key="PriorPeriodTotal"><div>{this.returnNullDisplayObj(priorPerAmountTotal)}</div></td>
+                                    <td style={{ paddingLeft: "0px" }} key="CurrentTotal"><div>{this.returnNullDisplayObj(currentPerAmountTotal)}</div></td>
+                                    <td style={{ paddingRight: "0px" }} key="AdjTotal"><div>{this.returnNullDisplayObj(currentPerAdjTotal)}</div></td>
+                                    <td style={{ paddingLeft: "0px" }} key="AdjCurrentTotal"><div>{this.returnNullDisplayObj(adjCurrentPerTotal)}</div></td>
+                                    <td key="ComparativeTotal"><div>{this.returnNullDisplayObj(comparativePeriodTotal)}</div></td>
+                                    <td style={{ paddingRight: "0px" }} key="VarianceTotal"><div>{this.returnNullDisplayObj(varianceAmountTotal)}</div></td>
+                                    <td style={{ paddingLeft: "0px" }} key="VariancePctTotal"><div>{this.returnNullDisplayObj(variancePercentTotal)}</div></td>
+                                    <td colSpan={2}><div>&nbsp;</div></td>
+                                    {dynamicFooters}
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            );
+        }
+
+    }
+}

@@ -1,0 +1,1050 @@
+#trialbalanceHolder .hidden {
+    display: none;
+}
+
+#trialbalanceHolder h1 {
+    color: black;
+    font-weight: bold;
+    font-family: verdana;
+    font-size: 25px;
+}
+
+#trialbalanceHolder p {
+    color: black;
+    font-family: verdana;
+    font-size: 16px;
+}
+
+#trialbalanceHolder .divTable {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    padding-bottom: 15px
+}
+
+.trialBalanceCarouselNarrowTable {
+    padding-bottom: 2px;
+}
+
+#trialbalanceHolder .divRow {
+    display: table-row;
+    background-color: #e9e9e9;
+    width: auto;
+    clear: both;
+    height: 100px;
+}
+
+.trialBalanceCarouselNarrowRow {
+    height: 60px !important;
+}
+
+#trialbalanceHolder .divCarousel {
+    float: left;
+    display: table-column;
+    width: auto;
+    padding: 5px 5px 5px 20px;
+}
+
+#trialbalanceHolder .tile {
+    float: left;
+    display: table-column;
+    width: 210px;
+    height: 100px;
+    text-align: center;
+    vertical-align: central;
+    border: dotted #c0c0c0;
+    border-width: 2px;
+    margin: 5px 10px 5px 0;
+}
+
+    #trialbalanceHolder .tile.period {
+        min-width: 290px;
+        max-width: 290px !important;
+        border: none;
+        padding-top: 8px;
+        transition: transform .2s ease;
+    }
+
+        #trialbalanceHolder .tile.period:hover {
+            -ms-transform: scale(1.15);
+            -webkit-transform: scale(1.15);
+            transform: scale(1.15);
+        }
+
+            #trialbalanceHolder .tile.period:hover .tileText.detail.header.icon {
+                opacity: 1;
+            }
+
+#trialbalanceHolder .tileText {
+    color: rgb(79, 79, 79);
+    font-size: 12px;
+}
+
+    #trialbalanceHolder .tileText.periodTitle {
+        font-family: sans-serif;
+        font-size: 12px;
+        font-style: normal;
+        font-variant: small-caps;
+        font-weight: 500;
+        line-height: 14px;
+        text-align: left;
+        color: grey;
+        height: 18px;
+        border-bottom: thick;
+        border-color: whitesmoke;
+        border-style: solid;
+        border-bottom-width: 5px;
+        padding-bottom: 1px;
+    }
+
+        #trialbalanceHolder .tileText.periodTitle.current {
+            border-color: #d04a02
+        }
+
+        #trialbalanceHolder .tileText.periodTitle.priorcurrent {
+            border-color: grey
+        }
+
+        #trialbalanceHolder .tileText.periodTitle.comparative {
+            border-color: orange
+        }
+
+    #trialbalanceHolder .tileText.detail {
+        text-align: left;
+        background-color: #fff;
+        height: 65px;
+        box-shadow: 1px 1px 2px #c0c0c0;
+        border-width: 0px;
+    }
+
+        #trialbalanceHolder .tileText.detail.header,
+        #trialbalanceHolder .header {
+            padding-left: 12px;
+            padding-top: 2px;
+            height: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: none;
+            word-break: break-all;
+            flex: 3.75 0 0;
+        }
+
+            #trialbalanceHolder .tileText.detail.header.icon {
+                padding-left: 0;
+                text-align: right;
+                padding-right: 5px;
+                transition: all 0.4s ease;
+                opacity: 0.01;
+                flex: 1 0 0;
+            }
+
+        #trialbalanceHolder .tileText.detail.body {
+            padding-left: 12px;
+            padding-top: 5px;
+            font-size: 12px;
+            font-weight: normal;
+            box-shadow: none;
+            height: auto;
+        }
+
+        #trialbalanceHolder .tileText.detail.footer {
+            padding-left: 12px;
+            color: darkgray;
+            font-size: 12px;
+            font-weight: normal;
+            box-shadow: none;
+            height: auto;
+        }
+
+#trialbalanceHolder .miniTile {
+    float: left;
+    display: table-column;
+    width: 210px;
+    height: 50px;
+    text-align: center;
+    vertical-align: central;
+    border: dotted #c0c0c0;
+    border-width: 2px;
+    margin: 5px 10px 5px 0;
+    padding: 5px 0;
+}
+
+    #trialbalanceHolder .miniTile.tileText {
+        text-align: left;
+        background-color: #fff;
+        height: 30px;
+        box-shadow: 1px 1px 2px #c0c0c0;
+        border-width: 0;
+    }
+
+    #trialbalanceHolder .miniTile.period {
+        min-width: 290px;
+        max-width: 290px !important;
+        border: none;
+        padding-top: 1px;
+    }
+
+
+#trialbalanceHolder .miniTileHeader {
+    padding-left: 12px;
+    padding-top: 2px;
+    height: 28px;
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: none;
+    word-break: break-all;
+    flex: 3.75 0 0;
+}
+
+#trialbalanceHolder .miniTileBody {
+    height: 20px;
+    float: left;
+    padding: 5px;
+    font-size: 11px;
+    color: darkgrey;
+    width: -moz-max-content;
+    width: max-content;
+}
+
+#trialbalanceHolder .divider {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    height: 2px;
+}
+
+#trialbalanceHolder .warningBar,
+#scoping-view .warningBar {
+    width: 100%;
+    height: 30px;
+    border-top: 1px solid darkred;
+    border-bottom: 1px solid #dcdcdc;
+    background-color: antiquewhite;
+    font-family: sans-serif;
+    margin-top: -15px;
+}
+
+#trialbalanceHolder .warningBarText,
+#scoping-view .warningBarText {
+    font-family: sans-serif;
+    font-size: 14px;
+    padding-top: 7px;
+}
+
+#trialbalanceHolder #tbImportWizard .divider {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    height: 3px;
+    background-color: #D04A02
+}
+
+#trialbalanceHolder #wizardStep1 .tile {
+    float: left;
+    display: table-column;
+    width: 99.5%;
+    height: 80px;
+    text-align: center;
+    vertical-align: central;
+    border: dotted #c0c0c0;
+    border-width: 2px;
+}
+
+#trialbalanceHolder #wizardStep1 .divTable {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    padding-bottom: 10px;
+}
+
+#trialbalanceHolder #wizardStep4 .tile {
+    float: left;
+    display: table-column;
+    width: 99.5%;
+    height: 80px;
+    text-align: center;
+    vertical-align: central;
+    border: dotted #c0c0c0;
+    border-width: 2px;
+}
+
+
+#trialbalanceHolder .wizardStepTitle {
+    display: table-row;
+    color: #D04A02;
+    font-weight: 600;
+    text-align: center;
+}
+
+#trialbalanceHolder .wizardStepSubTitle {
+    display: table-row;
+    font-size: small;
+    text-align: center;
+}
+
+#trialbalanceHolder .wiazrdStep4Option {
+    display: table-row;
+    font-size: small;
+    text-align: right;
+}
+
+#trialbalanceHolder .wizardStepDivTable {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    padding-bottom: 15px;
+}
+
+#trialbalanceHolder #wizardStep1 .divRow {
+    display: table-row;
+    width: auto;
+    clear: both;
+    height: 100px;
+}
+
+#trialbalanceHolder #wizardStep1 .divCol {
+    display: table-column;
+}
+
+#trialbalanceHolder #wizardStep3 .center {
+    display: table;
+    width: 85%;
+    table-layout: fixed;
+    padding-bottom: 15px;
+    border-style: ridge;
+    border-width: 0px;
+    border-radius: 2px;
+    background-color: #FFFFFF;
+    box-shadow: 0 0 0 1px rgba(49,57,63,0.05), 0 1px 3px 1px rgba(49,57,63,0.2);
+}
+
+#trialbalanceHolder #wizardStep3 .divTable {
+    display: table;
+    width: 100%;
+    height: 60px;
+    table-layout: fixed;
+    padding-bottom: 10px;
+    background-color: white;
+}
+
+
+#trialbalanceHolder #wizardStep3 .divRow {
+    display: table-row;
+    width: auto;
+    clear: both;
+    padding-bottom: 10px;
+    height: 10px;
+    background-color: #FFFFFF;
+}
+
+#trialbalanceHolder #wizardStep3 .divider {
+    display: table;
+    background-color: #EAEAEA;
+    width: 100%;
+    table-layout: fixed;
+    height: 2px;
+}
+
+#trialbalanceHolder #wizardStep3-ColumnHeader {
+    display: table-row;
+    color: #666666;
+    font-size: 350px;
+    text-align: center;
+}
+
+#trialbalanceHolder #wizardStep3-PeriodHeader {
+    display: table-row;
+    color: #666666;
+    font-size: 80px;
+    text-align: center;
+}
+
+#trialbalanceHolder .App {
+    text-align: center;
+}
+
+#trialbalanceHolder .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+    height: 40vmin;
+}
+
+#trialbalanceHolder .App-header {
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+}
+
+#trialbalanceHolder .App-link {
+    color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ********************************************************************************************************************************************************* */
+#trialbalanceHolder .TBTable {
+    font-size: 0.8em;
+    border: 1px solid #DCDCDC;
+    border-collapse: separate;
+    border-spacing: 0 7px;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+    #trialbalanceHolder .TBTable thead tr th:first-child {
+        border-spacing: 1px !important;
+        vertical-align: bottom;
+        padding: 0 5px .5em 0;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    #trialbalanceHolder .TBTable thead tr th {
+        border-spacing: 1px !important;
+        vertical-align: bottom;
+        padding: 0 5px .5em 5px;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+        #trialbalanceHolder .TBTable thead tr th div {
+            font-weight: bold;
+            border-bottom: 2px solid #dcdcdc;
+            vertical-align: bottom;
+            text-align: center;
+            padding-bottom: 1em;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+            #trialbalanceHolder .TBTable thead tr th div div {
+                font-weight: bold;
+                white-space: nowrap;
+                overflow: hidden;
+                padding-bottom: 0;
+                border-bottom: none;
+            }
+
+
+#trialbalanceHolder .tbRowData {
+    padding-left: 5px;
+    padding-right: 15px;
+    height: 20px !important;
+}
+
+
+#trialbalanceHolder .TBTable tbody tr td {
+    text-align: right;
+}
+
+/* Annotation text*/
+#trialbalanceHolder .annoteText {
+    color: #D04A02;
+    font-weight: bold;
+    display: block;
+    padding: 5px;
+}
+
+#trialbalanceHolder .TBHead {
+    font-weight: bold;
+    display: flex;
+}
+
+#trialbalanceHolder .borderTopDouble {
+    border-style: double;
+    border-right: none;
+    border-left: none;
+    border-bottom: none;
+    text-align: left;
+}
+
+#trialbalanceHolder .borderTop {
+    border: 4px solid #dcdcdc;
+    border-right: none;
+    border-left: none;
+    border-bottom: none;
+}
+
+#trialbalanceHolder .alignLeft {
+    text-align: left;
+}
+
+#trialbalanceHolder .truncateDesc {
+    width: 225px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#trialbalanceHolder .footerTotal td {
+    padding: 5px;
+}
+
+    #trialbalanceHolder .footerTotal td div {
+        border: 3px double #dcdcdc;
+        border-right: none;
+        border-left: none;
+        border-bottom: none;
+        font-weight: bold;
+        padding-top: 10px;
+        padding-right: 10px;
+    }
+
+#trialbalanceHolder .tbExpandable {
+    border: 1px solid #DCDCDC;
+    padding: 5px;
+}
+
+/**Region KPI Indicators ********/
+#trialbalanceHolder .managetb-keyindicators {
+    font-size: 12px;
+    float: left;
+}
+
+    #trialbalanceHolder .managetb-keyindicators .kpi-tile {
+        height: 30px;
+        border: 1px solid lightgray;
+        border-radius: 0 3px 3px 0;
+        padding: 0 10px 0;
+        margin: 0 15px 0 0;
+        width: -webkit-max-content;
+        width: -moz-max-content;
+        width: max-content;
+    }
+
+#trialbalanceHolder .balanceChangedIndicator {
+    border-left: 5px solid darkred;
+}
+
+#trialbalanceHolder .movedAccountIndicator {
+    border-left: 5px solid purple;
+}
+
+#trialbalanceHolder .newAccountIndicator {
+    border-left: 5px solid darkblue;
+}
+
+#trialbalanceHolder .balanceChanged {
+    background: #F6E7EA;
+}
+
+#trialbalanceHolder .movedAccount {
+    background: #EFECF3;
+}
+
+#trialbalanceHolder .newAccount {
+    background: #E6EDF1;
+}
+
+#trialbalanceHolder .managetb-keyindicators .kpicount {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 28px;
+    float: left;
+    white-space: nowrap;
+}
+
+#trialbalanceHolder .managetb-keyindicators .kpi-task {
+    color: #666666;
+    font-size: 14px;
+    line-height: 1.2;
+    word-break: normal;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    padding-left: 5px;
+    min-width: 100px;
+}
+
+
+
+/* ********************************************************************************************************************************************************* */
+/* TB Tile Menu Options*/
+
+#trialbalanceHolder .tb-dropbtn {
+    border: none;
+    cursor: default;
+}
+
+
+#trialbalanceHolder .tb-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+#trialbalanceHolder .tb-dropdown-content {
+    display: none;
+    background-color: #ffffff;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #f1f1f1;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    text-align: left;
+    font-size: 13px;
+    position: absolute;
+    left: -100px;
+    border-left: 25px;
+    width: 200px;
+    height: auto;
+    cursor: default;
+}
+
+    #trialbalanceHolder .tb-dropdown-content a {
+        color: inherit;
+        padding: 3px;
+        text-decoration: none;
+        display: block;
+        padding-left: 10px;
+        font: inherit;
+        font-size: 12px;
+
+    }
+
+        #trialbalanceHolder .tb-dropdown-content a:hover {
+            background-color: #f1f1f1
+        }
+
+#trialbalanceHolder .tb-dropdown:hover .tb-dropdown-content {
+    display: block;
+}
+
+
+#trialbalanceHolder .tb-DropdownDivider {
+    border: none;
+    height: 1px;
+    background-color: lightgray;
+    position: center;
+    width: 175px;
+}
+
+/*Tooltip*/
+
+#trialbalanceHolder .annoteText .tb-tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+#trialbalanceHolder .tb-tooltip .tb-tooltiptext {
+    visibility: hidden;
+    width: 250px;
+    background-color: #36393f;
+    color: #fff;
+    text-align: justify;
+    border-radius: 2px;
+    padding: 5px;
+    line-height: normal;
+    white-space: normal;
+    /* Position the tooltip */
+    position: absolute;
+    margin-left: -100px;
+    margin-top: 15px;
+}
+
+#trialbalanceHolder .tb-tooltip:hover .tb-tooltiptext {
+    visibility: visible;
+}
+
+/* ********************************************************************************************************************************************************* */
+#trialbalanceHolder #wizardStep4 .divTable {
+    display: table;
+    width: 95%;
+    table-layout: fixed;
+    padding-bottom: 15px;
+}
+
+
+#trialbalanceHolder #wizardStep4 .divRow {
+    display: table-row;
+    width: auto;
+    clear: both;
+    height: 100px;
+}
+
+
+#trialbalanceHolder #wizardStep4 .divCol {
+    display: table-column;
+}
+
+#trialbalanceHolder #wizardStep4 td,
+#trialbalanceHolder #wizardStep4 th {
+    padding: 5px !important;
+}
+
+#trialbalanceHolder #wizardStep4 .fsliNonSelection {
+    border: solid;
+    border-width: 1px;
+    border-color: grey;
+}
+
+#trialbalanceHolder #wizardStep4 .fsliSelection {
+    border: solid;
+    border-width: 1px;
+    border-color: #D04A02;
+    border-top-width: 3px;
+}
+
+#trialbalanceHolder #wizardStep4 .chFsliTitle {
+    font-weight: bold;
+    font-size: 0.8em;
+    vertical-align: middle;
+    height: 25px;
+    color: #282F34;
+    cursor: pointer;
+}
+
+#trialbalanceHolder #wizardStep4 .chFsliTitleSelected {
+    font-weight: bold;
+    font-size: 0.8em;
+    vertical-align: middle;
+    height: 25px;
+    color: #D04A02;
+    cursor: pointer;
+}
+
+#trialbalanceHolder .step-description {
+    margin: 5px 10px;
+    color: #333333;
+    font-family: Roboto;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+#trialbalanceHolder .step-title {
+    color: #D04A02;
+    font-family: Roboto;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 30px;
+    text-align: center;
+}
+
+#trialbalanceHolder .horizontalScrollContainer {
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    -ms-flex-flow: column;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+#trialbalanceHolder #contextMenu {
+    position: absolute;
+    display: none;
+}
+
+#trialbalanceHolder .verticalScrollContainer {
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+}
+
+#trialbalanceHolder .vertical-divider {
+    height: 24px;
+    width: 1px;
+    background-color: #D8D8D8;
+    float: right;
+}
+
+#trialbalanceHolder .fixedHeaderTable {
+    border-collapse: collapse;
+    background: white;
+    table-layout: fixed;
+    width: 100%;
+}
+
+    #trialbalanceHolder .fixedHeaderTable thead tr:nth-child(1) {
+        width: 100%;
+        background-color: #FFE8DC;
+        box-shadow: 0 0 0 0 rgba(0,0,0,0.5);
+    }
+
+        #trialbalanceHolder .fixedHeaderTable thead tr:nth-child(1) td {
+            background-color: #FFE8DC;
+        }
+
+    #trialbalanceHolder .fixedHeaderTable thead tr:nth-child(2) {
+        height: 44px;
+        width: 100%;
+        background-color: #F2F2F2;
+        box-shadow: inset 0 -1px 0 0 rgba(216,216,216,0.5), 0 -1px 0 0 rgba(49,57,63,0.2), 0 1px 0 0 rgba(49,57,63,0.2);
+    }
+
+        #trialbalanceHolder .fixedHeaderTable thead tr:nth-child(2) th {
+            background-color: #F2F2F2;
+            box-shadow: inset 0 -1px 0 0 rgba(216,216,216,0.5), 0 -1px 0 0 rgba(49,57,63,0.2), 0 1px 0 0 rgba(49,57,63,0.2);
+            border-collapse: separate;
+            border-right: 1px solid #D8D8D8;
+        }
+
+    #trialbalanceHolder .fixedHeaderTable thead tr td,
+    #trialbalanceHolder .fixedHeaderTable thead tr th,
+    #trialbalanceHolder .fixedHeaderTable tbody tr td {
+        padding: 8px 8px;
+        width: 160px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    #trialbalanceHolder .fixedHeaderTable tbody tr:not(:last-child) {
+        box-sizing: border-box;
+        width: 1920px;
+        border: 1px solid #979797;
+        box-shadow: 0 0 0 0 rgba(0,0,0,0.5);
+    }
+
+    #trialbalanceHolder .fixedHeaderTable tbody tr td {
+        height: 16px;
+        color: #404041;
+        font-family: Roboto;
+        font-size: 12px;
+        line-height: 16px;
+    }
+
+    #trialbalanceHolder .fixedHeaderTable thead tr th {
+        height: 16px;
+        color: #282F34;
+        font-family: Roboto;
+        font-size: 12px;
+        font-weight: bold;
+        line-height: 16px;
+    }
+
+#trialbalanceHolder .col-mapping-select {
+    height: 30px;
+    width: 100%;
+    border: 1px solid #D4D5D6;
+    border-radius: 2px;
+    background-color: #FFFFFF;
+    box-shadow: inset 0 0 2px 0 #D8D8D8, 0 2px 4px 0 rgba(0,0,0,0.5);
+    display: block !important;
+    font-size: 12px !important;
+}
+
+    #trialbalanceHolder .col-mapping-select option {
+        height: 19px;
+        color: #333333;
+        font-family: Roboto;
+        font-size: 12px;
+        line-height: 19px;
+    }
+
+#trialbalanceHolder .col-mapping-ignore {
+    height: 16px;
+    width: 16px;
+    border: 1px solid #333333;
+    border-radius: 2px;
+    background-color: #FFFFFF;
+    /*box-shadow: inset 0 0 3px 0 rgba(0,0,0,0.5), 0 0 4px 0 rgba(0,0,0,0.5);*/
+    margin-top: 10px;
+    margin-left: 0;
+}
+
+#trialbalanceHolder .col-mapping-ignore-label {
+    height: 24px;
+    color: #333333;
+    font-family: Roboto;
+    font-size: 12px;
+    line-height: 24px;
+    margin-left: 3px;
+}
+
+#trialbalanceHolder .col-mapping-ignore:checked ~ .col-mapping-ignore-label::before {
+    background-color: #D04A02;
+}
+
+#trialbalanceHolder .fa-icon-hover:hover {
+    color: #D04A02;
+    cursor: pointer;
+}
+
+/***************carousel***************************************************************************/
+#trialbalanceHolder .carousel-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+#trialbalanceHolder .carousel-body {
+    position: relative;
+    margin: 0 25px;
+    transition: left 0.1s linear;
+}
+
+#trialbalanceHolder .carousel-paged .carousel-body {
+    transition: left 0.2s linear;
+}
+
+#trialbalanceHolder .carousel-body.carousel-disabled {
+    margin: 0;
+}
+
+#trialbalanceHolder .carousel-body.swiping {
+    transition: none;
+}
+
+#trialbalanceHolder .carousel-hidden {
+    visibility: hidden;
+}
+
+#trialbalanceHolder .l-align-chevronUp {
+    margin-top: -70px;
+}
+
+.sel-box {
+    /*position: relative;*/   
+}
+
+.select-dropdown {
+    display: block;
+    width: 70px;
+    height: 20px;
+    border: 1px solid #999;
+    padding: 5px;
+    text-align: left;
+}
+
+.toc-odd {
+    /*position: absolute;*/
+    background: #f1f1f1;
+    width: 300px;
+    display: block;
+    box-shadow: 0 10px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    overflow-y: scroll;
+    z-index: 1;
+    max-height: 130px;
+}
+
+.tkmaaj{
+    height: 200px;
+    overflow-y: scroll;
+}
+
+.tickmarkDesc{
+    font-style: normal;
+    font-size: 12px;
+    color: grey;
+}
+
+.addCustomButton {
+    padding: 5px;
+    text-align: left;
+    display: block;
+    margin: 5px;
+}
+
+.toc-odd li {
+    padding: 7px;
+    border-bottom: 1px solid #ccc;
+    text-align: left;
+    margin-left: 2px;
+}
+
+.toc-odd li:nth-last-child(2) {
+    /*margin-bottom: 15px;*/
+}
+
+.toc-odd li.lifix {
+    /*position: absolute;
+    top: 124%;
+    background: #f1f1f1;
+    width: 286px;
+    margin-left: 0px;
+    border-top: 1px solid #ccc;
+    height: 26px;*/
+}
+    .toc-odd .listyle {
+        font-weight: bold;
+    }
+
+.toc-odd .linomral {
+    font-weight: normal;
+}
+
+.toc-odd li a {
+    text-decoration: none;
+}
+
+/*.sel-box {
+    position: relative;
+}*/
+
+a {
+    font: inherit;
+    font-style: normal;
+    text-decoration: inherit;
+    color: inherit;
+}
+
+#select {
+    display: block;
+    width: 60px;
+    height: 10px;
+    border: 1px solid #999;
+    padding: 5px;
+    text-align: left;
+}
+
+/*.toc-odd {
+    position: absolute;
+    top: 32px;
+    background: #f1f1f1;
+    width: 250px;*/
+    /* display:none; 
+}
+
+/*.toc-odd li {
+        padding: 5px 10px;
+        border-bottom: 1px solid #999;
+}*/
+
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 10rem;
+    padding: .5rem 0;
+    margin: .125rem 0 0;
+    font-size: 1rem;
+    color: #212529;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: .25rem;
+}
+
+    .dropdown-menu.show {
+        display: block;
+    }
+
+#circleID{
+    display: none;
+}
+
+.toc-odd li:hover #circleID {
+    display: block;
+}
+
+#background:hover{
+    background-color: lightgray;
+}
